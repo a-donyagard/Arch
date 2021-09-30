@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="animeItem"
+            type="com.arash.arch.ui.anime.AnimeDataItem.AnimeItem" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/card_radius"
+        app:cardElevation="@dimen/card_elevation"
+        app:cardUseCompatPadding="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/default_padding">
+
+            <ImageView
+                android:id="@+id/cover_image"
+                srcImageUrl="@{animeItem.coverImageUrl}"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/cover_image_description"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/cover_image" />
+
+            <ImageView
+                android:id="@+id/rank_star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:contentDescription="@string/rating_star_description"
+                app:layout_constraintBottom_toBottomOf="@id/cover_image"
+                app:layout_constraintEnd_toEndOf="@id/cover_image"
+                app:layout_constraintTop_toBottomOf="@id/cover_image"
+                app:srcCompat="@drawable/vc_star" />
+
+            <TextView
+                android:id="@+id/popularity_rank"
+                style="@style/TitleStyle"
+                android:layout_width="0dp"
+                android:layout_marginLeft="@dimen/default_margin"
+                android:layout_marginRight="@dimen/default_margin"
+                android:gravity="center"
+                android:text="@{String.valueOf(animeItem.anime.attributes.popularityRank)}"
+                android:textColor="@color/white"
+                android:textSize="@dimen/default_text_size"
+                app:layout_constraintBottom_toBottomOf="@id/rank_star"
+                app:layout_constraintEnd_toEndOf="@id/rank_star"
+                app:layout_constraintStart_toStartOf="@id/rank_star"
+                app:layout_constraintTop_toTopOf="@id/rank_star"
+                tools:text="1" />
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/TitleStyle"
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginTop="@dimen/default_margin"
+                android:text="@{animeItem.anime.attributes.title}"
+                app:layout_constraintEnd_toStartOf="@id/rank_star"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cover_image"
+                tools:text="Cowboy Bebop" />
+
+            <TextView
+                android:id="@+id/episodes_detail"
+                style="@style/TextStyle"
+                android:layout_width="0dp"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:text="@{animeItem.episodesDetailText}"
+                android:textColor="@color/grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/title"
+                app:layout_constraintTop_toBottomOf="@id/title"
+                tools:text="Update to Ep54 | 2016" />
+
+            <TextView
+                android:id="@+id/viewed"
+                style="@style/TitleStyle"
+                android:layout_marginTop="@dimen/default_margin"
+                android:text="@string/viewed"
+                android:textColor="@color/gold"
+                app:layout_constraintEnd_toEndOf="@id/episodes_detail"
+                app:layout_constraintTop_toBottomOf="@id/episodes_detail" />
+
+            <TextView
+                android:id="@+id/view_count"
+                style="@style/TitleStyle"
+                android:layout_marginTop="@dimen/default_margin"
+                android:layout_marginEnd="@dimen/small_margin"
+                android:text="@{String.valueOf(animeItem.anime.attributes.userCount)}"
+                android:textColor="@color/gold"
+                android:textSize="22sp"
+                app:layout_constraintBaseline_toBaselineOf="@id/viewed"
+                app:layout_constraintEnd_toStartOf="@id/viewed"
+                tools:text="123456" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

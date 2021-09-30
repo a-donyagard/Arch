@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Arash Arch</string>
+    <string name="network_error">خطای شبکه</string>
+    <string name="not_defined_error">خطای تعریف نشده</string>
+    <string name="fail">ناموفق</string>
+    <string name="empty_response_error">محتوایی برای نمایش وجود ندارد</string>
+    <string name="you_are_not_logged_in">لاگین نکرده اید</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cover_image_description">anime cover image</string>
+    <string name="rating_star_description">rating star</string>
+    <string name="anime_list">Anime List</string>
+    <string name="view_type_not_handled_error">This view type cannot be handled %d</string>
+    <string name="episodes_detail_format">Update to Ep%s | %s</string>
+    <string name="item_click_format">%s clicked</string>
+    <string name="viewed">viewed</string>
+</resources>

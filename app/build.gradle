@@ -1,0 +1,100 @@
+import com.arash.arch.Libs
+
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-android-extensions'
+    id 'androidx.navigation.safeargs'
+}
+
+android {
+    compileSdk 30
+
+    defaultConfig {
+        applicationId "com.arash.arch"
+        minSdk 21
+        targetSdk 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    // Kotlin & Coroutines
+    implementation Libs.Common.kotlin
+    implementation Libs.Common.coroutines
+    implementation Libs.Common.coroutinesAndroid
+
+    // Either
+    implementation Libs.Common.arrowCore
+    implementation Libs.Common.arrowSyntax
+    implementation Libs.Common.arrowLegacySupport
+    kapt Libs.Common.arrowMeta
+
+    // Project Submodules
+    implementation project(Libs.Modules.data)
+
+    // Jetpack
+    implementation Libs.Jetpack.lifecycleExtensions
+    implementation Libs.Jetpack.viewModelKtx
+    implementation Libs.Jetpack.liveDataKtx
+    implementation Libs.Jetpack.room
+    implementation Libs.Jetpack.material
+    implementation Libs.Jetpack.constraintLayout
+    implementation Libs.Jetpack.navigationFragment
+    implementation Libs.Jetpack.navigationUi
+
+    // Retrofit - OkHttp
+    implementation Libs.Common.retrofit
+    implementation Libs.Common.retrofitGson
+    implementation Libs.Common.okHttpInterceptor
+    implementation Libs.Common.stetho
+    implementation Libs.Common.stetho_OkHttp
+    implementation Libs.Common.retrofitCoroutines
+
+    // Glide
+    implementation Libs.Common.glide
+    kapt Libs.Common.glideCompiler
+
+    // Test Dependencies
+    testImplementation Libs.Testing.junit
+    testImplementation Libs.Testing.mockitoKotlin
+    testImplementation Libs.Testing.archTesting
+    androidTestImplementation Libs.Testing.testRunner
+    androidTestImplementation Libs.Testing.esperesso
+    androidTestImplementation Libs.Testing.junitExt
+
+    // Hilt
+    implementation Libs.Common.hilt
+    kapt Libs.Common.hiltCompiler
+
+    // Canary
+    debugImplementation(Libs.Common.canary)
+}
