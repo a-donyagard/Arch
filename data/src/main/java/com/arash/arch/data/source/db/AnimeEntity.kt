@@ -51,9 +51,7 @@ data class AnimeEntity(
     @ColumnInfo(name = "created_at")
     val createdAt: String,
     @ColumnInfo(name = "row_created_time")
-    val rowCreatedTime: Long,
-    @Embedded(prefix = "pagination_")
-    val paginationLinks: PaginationLinksDb?
+    val rowCreatedTime: Long
 )
 
 fun AnimeListWrapper.toAnimeEntityList(): List<AnimeEntity> {
@@ -81,8 +79,7 @@ fun AnimeListWrapper.toAnimeEntityList(): List<AnimeEntity> {
             it.attributes.totalLength,
             it.attributes.showType,
             it.attributes.createdAt,
-            System.currentTimeMillis(),
-            links?.toPaginationLinksDb()
+            System.currentTimeMillis()
         )
     }
 }

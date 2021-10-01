@@ -10,12 +10,11 @@ data class AnimeListWrapper(
     val links: PaginationLinks?
 )
 
-fun List<AnimeEntity>.toKitsoResponse(): AnimeListWrapper {
-    val animeList = map {
-        it.toAnime()
-    }
+fun List<AnimeEntity>.toAnimeListWrapper(paginationLinks: PaginationLinks): AnimeListWrapper {
     return AnimeListWrapper(
-        animeList,
-        firstOrNull()?.paginationLinks?.toPaginationLinks()
+        map {
+            it.toAnime()
+        },
+        paginationLinks
     )
 }
