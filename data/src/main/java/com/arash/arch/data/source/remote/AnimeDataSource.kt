@@ -6,7 +6,7 @@ import retrofit2.http.Query
 
 interface AnimeDataSource {
     @GET("anime")
-    suspend fun getAnimeList(
+    suspend fun fetchAnimeList(
         @Query("page[limit]") limit: Int,
         @Query("page[offset]") offset: Int
     ): KitsoResponse

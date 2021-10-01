@@ -1,6 +1,7 @@
 package com.arash.arch.ui.anime
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import arrow.core.extensions.list.foldable.isNotEmpty
@@ -12,7 +13,6 @@ import com.arash.arch.ui.base.BaseViewModel
 import com.arash.arch.util.providers.ErrorMessageProvider
 import com.arash.arch.util.providers.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ir.hami.bourse.util.livedata.NonNullLiveData
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,7 +22,11 @@ class AnimeViewModel @Inject constructor(
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
 ) : BaseViewModel() {
-    private val _animeItemsLiveData = NonNullLiveData<List<AnimeDataItem>>(emptyList())
+    private val _animeItemsLiveData = MediatorLiveData<List<AnimeDataItem>>().apply {
+        addSource(animeRepository.animeList) { kitsoResponse ->
+            manipulateDatabaseAnimeList(kitsoResponse)
+        }
+    }
     val animeItemsLiveData: LiveData<List<AnimeDataItem>> = _animeItemsLiveData
     private var isLoading = false
     private var canLoadMore = true
@@ -31,36 +35,40 @@ class AnimeViewModel @Inject constructor(
     fun manualInit() {
         isLoading = true
         _loadingLiveData.value = true
-        getAnimeList()
+        fetchAnimeList(false)
     }
 
-    private fun getAnimeList() {
+    private fun fetchAnimeList(refresh: Boolean) {
         viewModelScope.launch {
-            when (val either = animeRepository.getAnimeList(DataConstants.apiListSize, offset)) {
-                is Either.Right -> manipulateAnimeList(either.b)
+            when (val either =
+                animeRepository.fetchAnimeList(DataConstants.apiListSize, offset, refresh)) {
+                is Either.Right -> manipulateApiAnimList(either.b)
                 is Either.Left -> getAnimeListApiFail(either.a)
             }
         }
     }
 
-    private fun manipulateAnimeList(response: KitsoResponse) {
-        val animeItems = mutableListOf<AnimeDataItem>()
-        animeItems.addAll(_animeItemsLiveData.value)
+    private fun manipulateApiAnimList(response: KitsoResponse) {
         isLoading = false
         if (response.data.size == DataConstants.apiListSize && response.links.next.isNullOrEmpty()
                 .not()
         ) {
             canLoadMore = true
-            offset += 10
+            offset += DataConstants.apiListSize
         } else {
             canLoadMore = false
         }
+        val animeItems = mutableListOf<AnimeDataItem>()
+        animeItems.addAll(_animeItemsLiveData.value ?: emptyList())
         if (animeItems.isNotEmpty() && animeItems.last() is AnimeDataItem.LoadingItem) {
             animeItems.removeLast()
         }
-        animeItems.addAll(response.data.toAnimeDataItems(resourceProvider))
         _animeItemsLiveData.value = animeItems
         _loadingLiveData.value = false
+    }
+
+    private fun manipulateDatabaseAnimeList(response: KitsoResponse) {
+        _animeItemsLiveData.value = response.data.toAnimeDataItems(resourceProvider)
     }
 
     private fun getAnimeListApiFail(error: Error) {
@@ -68,6 +76,12 @@ class AnimeViewModel @Inject constructor(
             onEmptyListApiFailure(error, errorMessageProvider)
         } else {
             onApiFailure(error, errorMessageProvider)
+        }
+        val animeItems = mutableListOf<AnimeDataItem>()
+        animeItems.addAll(_animeItemsLiveData.value ?: emptyList())
+        if (animeItems.isNotEmpty() && animeItems.last() is AnimeDataItem.LoadingItem) {
+            animeItems.removeLast()
+            _animeItemsLiveData.value = animeItems
         }
     }
 
@@ -77,10 +91,10 @@ class AnimeViewModel @Inject constructor(
         }
         isLoading = true
         val animeItems = mutableListOf<AnimeDataItem>()
-        animeItems.addAll(_animeItemsLiveData.value)
+        animeItems.addAll(_animeItemsLiveData.value ?: emptyList())
         animeItems.add(AnimeDataItem.LoadingItem)
         _animeItemsLiveData.value = animeItems
-        getAnimeList()
+        fetchAnimeList(false)
     }
 
     fun refresh() {
@@ -88,7 +102,6 @@ class AnimeViewModel @Inject constructor(
         isLoading = true
         canLoadMore = true
         offset = 0
-        _animeItemsLiveData.value = emptyList()
-        getAnimeList()
+        fetchAnimeList(true)
     }
 }

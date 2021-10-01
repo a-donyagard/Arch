@@ -2,6 +2,7 @@ package com.arash.arch.di.module
 
 import android.content.Context
 import androidx.room.Room
+import com.arash.arch.data.source.db.AnimeDao
 import com.arash.arch.data.source.db.AppDataBase
 import dagger.Module
 import dagger.Provides
@@ -21,5 +22,10 @@ object DatabaseModule {
             .databaseBuilder(appContext, AppDataBase::class.java, AppDataBase.DB_NAME)
             .fallbackToDestructiveMigration()
             .build()
+    }
+
+    @Provides
+    fun provideAnimeDao(appDataBase: AppDataBase): AnimeDao {
+        return appDataBase.animeDao()
     }
 }
