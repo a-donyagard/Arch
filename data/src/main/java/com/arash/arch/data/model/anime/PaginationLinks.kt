@@ -1,6 +1,5 @@
 package com.arash.arch.data.model.anime
 
-import com.arash.arch.data.source.db.PaginationLinksDb
 import com.google.gson.annotations.SerializedName
 
 data class PaginationLinks(
@@ -13,6 +12,3 @@ data class PaginationLinks(
     @SerializedName("last")
     val last: String?
 )
-
-fun PaginationLinksDb.toPaginationLinks(): PaginationLinks =
-    PaginationLinks(first, next, prev, last)
