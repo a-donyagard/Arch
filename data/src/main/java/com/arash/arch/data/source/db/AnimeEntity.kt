@@ -1,10 +1,7 @@
 package com.arash.arch.data.source.db
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import com.arash.arch.data.model.anime.KitsoResponse
+import androidx.room.*
+import com.arash.arch.data.model.anime.AnimeListWrapper
 
 @Entity(tableName = "AnimeEntity", indices = [Index(value = ["id"], unique = true)])
 data class AnimeEntity(
@@ -39,10 +36,10 @@ data class AnimeEntity(
     val ageRatingGuide: String,
     @ColumnInfo(name = "status")
     val status: String,
-    @ColumnInfo(name = "poster_image")
-    val posterImage: String,
-    @ColumnInfo(name = "cover_image")
-    val coverImage: String?,
+    @Embedded(prefix = "poster_image_")
+    val posterImage: ImageLinksDb,
+    @Embedded(prefix = "cover_image_")
+    val coverImage: ImageLinksDb?,
     @ColumnInfo(name = "episode_count")
     val episodeCount: Int,
     @ColumnInfo(name = "episode_length")
@@ -55,17 +52,11 @@ data class AnimeEntity(
     val createdAt: String,
     @ColumnInfo(name = "row_created_time")
     val rowCreatedTime: Long,
-    @ColumnInfo(name = "first_page")
-    val firstPage: String,
-    @ColumnInfo(name = "next_page")
-    val nextPage: String?,
-    @ColumnInfo(name = "prev_page")
-    val prevPage: String?,
-    @ColumnInfo(name = "last_page")
-    val lastPage: String
+    @Embedded(prefix = "pagination_")
+    val paginationLinks: PaginationLinksDb?
 )
 
-fun KitsoResponse.toAnimeEntityList(): List<AnimeEntity> {
+fun AnimeListWrapper.toAnimeEntityList(): List<AnimeEntity> {
     return data.map {
         AnimeEntity(
             it.id,
@@ -83,18 +74,15 @@ fun KitsoResponse.toAnimeEntityList(): List<AnimeEntity> {
             it.attributes.ageRating,
             it.attributes.ageRatingGuide,
             it.attributes.status,
-            it.attributes.posterImage.original,
-            it.attributes.coverImage?.original,
+            it.attributes.posterImage.toImageLinksDb(),
+            it.attributes.coverImage?.toImageLinksDb(),
             it.attributes.episodeCount,
             it.attributes.episodeLength,
             it.attributes.totalLength,
             it.attributes.showType,
             it.attributes.createdAt,
             System.currentTimeMillis(),
-            links.first,
-            links.next,
-            links.prev,
-            links.last
+            links?.toPaginationLinksDb()
         )
     }
 }
