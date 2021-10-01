@@ -7,7 +7,7 @@ data class KitsoResponse(
     @SerializedName("data")
     val data: List<Anime>,
     @SerializedName("links")
-    val links: PaginationLinks
+    val links: PaginationLinks?
 )
 
 fun List<AnimeEntity>.toKitsoResponse(): KitsoResponse {
@@ -16,11 +16,6 @@ fun List<AnimeEntity>.toKitsoResponse(): KitsoResponse {
     }
     return KitsoResponse(
         animeList,
-        PaginationLinks(
-            firstOrNull()?.firstPage ?: "",
-            firstOrNull()?.nextPage ?: "",
-            firstOrNull()?.prevPage ?: "",
-            firstOrNull()?.lastPage ?: ""
-        )
+        firstOrNull()?.paginationLinks?.toPaginationLinks()
     )
 }

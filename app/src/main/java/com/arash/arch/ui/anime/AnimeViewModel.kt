@@ -50,7 +50,7 @@ class AnimeViewModel @Inject constructor(
 
     private fun manipulateApiAnimList(response: KitsoResponse) {
         isLoading = false
-        if (response.data.size == DataConstants.apiListSize && response.links.next.isNullOrEmpty()
+        if (response.data.size == DataConstants.apiListSize && response.links?.next.isNullOrEmpty()
                 .not()
         ) {
             canLoadMore = true
