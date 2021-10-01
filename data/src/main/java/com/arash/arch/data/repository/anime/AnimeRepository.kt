@@ -18,9 +18,14 @@ class AnimeRepository @Inject constructor(
     private val localDataSource: LocalDataSource
 ) : BaseRepository(errorMapper) {
     val animeList: LiveData<KitsoResponse> = localDataSource.getAnimeList()
-    suspend fun refreshAnimeList(limit: Int, offset: Int): Either<Error, KitsoResponse> {
+    suspend fun fetchAnimeList(
+        limit: Int,
+        offset: Int,
+        refresh: Boolean
+    ): Either<Error, KitsoResponse> {
         return getResult {
-            val kitsoResponse = animeDataSource.getAnimeList(limit, offset)
+            val kitsoResponse = animeDataSource.fetchAnimeList(limit, offset)
+            if (refresh) localDataSource.clearAnimeEntity()
             localDataSource.insertAnimeList(kitsoResponse)
             kitsoResponse
         }

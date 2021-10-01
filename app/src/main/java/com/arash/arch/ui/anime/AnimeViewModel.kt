@@ -35,13 +35,13 @@ class AnimeViewModel @Inject constructor(
     fun manualInit() {
         isLoading = true
         _loadingLiveData.value = true
-        refreshAnimeList()
+        fetchAnimeList(false)
     }
 
-    private fun refreshAnimeList() {
+    private fun fetchAnimeList(refresh: Boolean) {
         viewModelScope.launch {
             when (val either =
-                animeRepository.refreshAnimeList(DataConstants.apiListSize, offset)) {
+                animeRepository.fetchAnimeList(DataConstants.apiListSize, offset, refresh)) {
                 is Either.Right -> manipulateApiAnimList(either.b)
                 is Either.Left -> getAnimeListApiFail(either.a)
             }
@@ -50,9 +50,14 @@ class AnimeViewModel @Inject constructor(
 
     private fun manipulateApiAnimList(response: KitsoResponse) {
         isLoading = false
-        canLoadMore =
-            response.data.size == DataConstants.apiListSize && response.links.next.isNullOrEmpty()
+        if (response.data.size == DataConstants.apiListSize && response.links.next.isNullOrEmpty()
                 .not()
+        ) {
+            canLoadMore = true
+            offset += DataConstants.apiListSize
+        } else {
+            canLoadMore = false
+        }
         val animeItems = mutableListOf<AnimeDataItem>()
         animeItems.addAll(_animeItemsLiveData.value ?: emptyList())
         if (animeItems.isNotEmpty() && animeItems.last() is AnimeDataItem.LoadingItem) {
@@ -64,7 +69,6 @@ class AnimeViewModel @Inject constructor(
 
     private fun manipulateDatabaseAnimeList(response: KitsoResponse) {
         _animeItemsLiveData.value = response.data.toAnimeDataItems(resourceProvider)
-        offset = response.data.count()
     }
 
     private fun getAnimeListApiFail(error: Error) {
@@ -90,7 +94,7 @@ class AnimeViewModel @Inject constructor(
         animeItems.addAll(_animeItemsLiveData.value ?: emptyList())
         animeItems.add(AnimeDataItem.LoadingItem)
         _animeItemsLiveData.value = animeItems
-        refreshAnimeList()
+        fetchAnimeList(false)
     }
 
     fun refresh() {
@@ -98,6 +102,6 @@ class AnimeViewModel @Inject constructor(
         isLoading = true
         canLoadMore = true
         offset = 0
-        refreshAnimeList()
+        fetchAnimeList(true)
     }
 }

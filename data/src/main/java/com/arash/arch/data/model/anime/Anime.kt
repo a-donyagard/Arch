@@ -14,10 +14,9 @@ fun AnimeEntity.toAnime(): Anime {
     return Anime(
         id,
         Attributes(
-            createdAt,
-            synopsis,
-            description,
             title,
+            description,
+            synopsis,
             averageRating,
             userCount,
             favoritesCount,
@@ -34,7 +33,8 @@ fun AnimeEntity.toAnime(): Anime {
             episodeCount,
             episodeLength,
             totalLength,
-            showType
+            showType,
+            createdAt
         )
     )
 }

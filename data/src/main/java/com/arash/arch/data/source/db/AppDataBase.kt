@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 abstract class AppDataBase : RoomDatabase() {
     companion object {
         const val DB_NAME = "arch.db"
-        const val VERSION = 2
+        const val VERSION = 1
     }
 
     abstract fun animeDao(): AnimeDao

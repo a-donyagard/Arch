@@ -11,14 +11,12 @@ data class AnimeEntity(
     @PrimaryKey
     @ColumnInfo(name = "id")
     val id: Int,
-    @ColumnInfo(name = "created_at")
-    val createdAt: String,
-    @ColumnInfo(name = "synopsis")
-    val synopsis: String,
-    @ColumnInfo(name = "description")
-    val description: String,
     @ColumnInfo(name = "title")
     val title: String,
+    @ColumnInfo(name = "description")
+    val description: String,
+    @ColumnInfo(name = "synopsis")
+    val synopsis: String,
     @ColumnInfo(name = "average_rating")
     val averageRating: String,
     @ColumnInfo(name = "user_count")
@@ -53,6 +51,10 @@ data class AnimeEntity(
     val totalLength: Int,
     @ColumnInfo(name = "show_type")
     val showType: String,
+    @ColumnInfo(name = "created_at")
+    val createdAt: String,
+    @ColumnInfo(name = "row_created_time")
+    val rowCreatedTime: Long,
     @ColumnInfo(name = "first_page")
     val firstPage: String,
     @ColumnInfo(name = "next_page")
@@ -67,10 +69,9 @@ fun KitsoResponse.toAnimeEntityList(): List<AnimeEntity> {
     return data.map {
         AnimeEntity(
             it.id,
-            it.attributes.createdAt,
-            it.attributes.synopsis,
-            it.attributes.description,
             it.attributes.title,
+            it.attributes.description,
+            it.attributes.synopsis,
             it.attributes.averageRating,
             it.attributes.userCount,
             it.attributes.favoritesCount,
@@ -88,6 +89,8 @@ fun KitsoResponse.toAnimeEntityList(): List<AnimeEntity> {
             it.attributes.episodeLength,
             it.attributes.totalLength,
             it.attributes.showType,
+            it.attributes.createdAt,
+            System.currentTimeMillis(),
             links.first,
             links.next,
             links.prev,

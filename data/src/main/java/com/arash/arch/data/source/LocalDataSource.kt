@@ -21,5 +21,10 @@ class LocalDataSource @Inject constructor(
 
     suspend fun insertAnimeList(kitsoResponse: KitsoResponse) {
         animeDao.insertAnimeList(kitsoResponse.toAnimeEntityList())
+        animeDao.removeExtraRows()
+    }
+
+    suspend fun clearAnimeEntity() {
+        animeDao.clearAnimeEntity()
     }
 }

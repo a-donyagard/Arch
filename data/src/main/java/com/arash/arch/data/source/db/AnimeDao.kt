@@ -13,4 +13,10 @@ interface AnimeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAnimeList(animeList: List<AnimeEntity>)
+
+    @Query("DELETE FROM AnimeEntity WHERE id NOT IN (SELECT id FROM AnimeEntity ORDER BY row_created_time DESC LIMIT 50)")
+    suspend fun removeExtraRows()
+
+    @Query("DELETE FROM AnimeEntity")
+    suspend fun clearAnimeEntity()
 }

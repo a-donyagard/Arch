@@ -4,14 +4,12 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 data class Attributes(
-    @SerializedName("createdAt")
-    val createdAt: String,
-    @SerializedName("synopsis")
-    val synopsis: String,
-    @SerializedName("description")
-    val description: String,
     @SerializedName("canonicalTitle")
     val title: String,
+    @SerializedName("description")
+    val description: String,
+    @SerializedName("synopsis")
+    val synopsis: String,
     @SerializedName("averageRating")
     val averageRating: String,
     @SerializedName("userCount")
@@ -45,5 +43,7 @@ data class Attributes(
     @SerializedName("totalLength")
     val totalLength: Int,
     @SerializedName("showType")
-    val showType: String
+    val showType: String,
+    @SerializedName("createdAt")
+    val createdAt: String
 )
