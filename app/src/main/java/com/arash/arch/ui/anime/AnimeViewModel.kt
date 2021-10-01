@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import arrow.core.extensions.list.foldable.isNotEmpty
 import com.arash.arch.data.model.Error
-import com.arash.arch.data.model.anime.KitsoResponse
+import com.arash.arch.data.model.anime.AnimeListWrapper
 import com.arash.arch.data.repository.anime.AnimeRepository
 import com.arash.arch.data.util.DataConstants
 import com.arash.arch.ui.base.BaseViewModel
@@ -48,9 +48,9 @@ class AnimeViewModel @Inject constructor(
         }
     }
 
-    private fun manipulateApiAnimList(response: KitsoResponse) {
+    private fun manipulateApiAnimList(response: AnimeListWrapper) {
         isLoading = false
-        if (response.data.size == DataConstants.apiListSize && response.links.next.isNullOrEmpty()
+        if (response.data.size == DataConstants.apiListSize && response.links?.next.isNullOrEmpty()
                 .not()
         ) {
             canLoadMore = true
@@ -67,7 +67,7 @@ class AnimeViewModel @Inject constructor(
         _loadingLiveData.value = false
     }
 
-    private fun manipulateDatabaseAnimeList(response: KitsoResponse) {
+    private fun manipulateDatabaseAnimeList(response: AnimeListWrapper) {
         _animeItemsLiveData.value = response.data.toAnimeDataItems(resourceProvider)
     }
 
