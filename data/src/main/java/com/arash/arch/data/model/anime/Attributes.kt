@@ -5,7 +5,7 @@ import java.util.*
 
 data class Attributes(
     @SerializedName("createdAt")
-    val createdAt: Date,
+    val createdAt: String,
     @SerializedName("synopsis")
     val synopsis: String,
     @SerializedName("description")
@@ -21,7 +21,7 @@ data class Attributes(
     @SerializedName("startDate")
     val startDate: String,
     @SerializedName("endDate")
-    val endDate: String,
+    val endDate: String?,
     @SerializedName("nextRelease")
     val nextRelease: String?,
     @SerializedName("popularityRank")
