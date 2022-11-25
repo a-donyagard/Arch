@@ -3,7 +3,7 @@ package com.arash.arch
 object Versions {
     const val arrow = "0.10.5"
     const val gradle = "4.1.3"
-    const val kotlin = "1.4.32"
+    const val kotlin = "1.6.10"
     const val coroutines = "1.4.1"
     const val gradleVersions = "0.39.0"
     const val arch = "2.3.1"
@@ -11,7 +11,7 @@ object Versions {
     const val archTest = "2.1.0"
     const val material = "1.4.0"
     const val constraintLayout = "2.1.0"
-    const val room = "2.3.0"
+    const val room = "2.4.3"
     const val dagger = "2.27"
     const val daggerAndroid = "2.25.4"
     const val okHttp = "4.9.0"
