@@ -47,7 +47,7 @@ class AnimeFragment : BaseFragment<AnimeViewModel, FragmentAnimeBinding>() {
     }
 
     private fun observers() {
-        viewModel.animeItemsLiveData.observe(viewLifecycleOwner) {
+        viewModel.animeItemsFlow.collectLatestLifecycleFlow {
             adapter?.submitList(it)
         }
     }

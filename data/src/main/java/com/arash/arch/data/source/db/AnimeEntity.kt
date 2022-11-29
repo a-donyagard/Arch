@@ -1,7 +1,7 @@
 package com.arash.arch.data.source.db
 
 import androidx.room.*
-import com.arash.arch.data.model.anime.AnimeListWrapper
+import com.arash.arch.data.model.anime.AnimeListDto
 
 @Entity(tableName = "AnimeEntity", indices = [Index(value = ["id"], unique = true)])
 data class AnimeEntity(
@@ -54,7 +54,7 @@ data class AnimeEntity(
     val rowCreatedTime: Long
 )
 
-fun AnimeListWrapper.toAnimeEntityList(): List<AnimeEntity> {
+fun AnimeListDto.toAnimeEntityList(): List<AnimeEntity> {
     return data.map {
         AnimeEntity(
             it.id,
