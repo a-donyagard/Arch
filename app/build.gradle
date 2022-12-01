@@ -60,6 +60,7 @@ dependencies {
 
     // Project Submodules
     implementation project(Libs.Modules.data)
+    implementation(project(Libs.Modules.domain))
 
     // Jetpack
     implementation Libs.Jetpack.lifecycleExtensions

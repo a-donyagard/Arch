@@ -1,6 +1,4 @@
-package com.arash.arch.data.model
-
-import com.google.gson.annotations.SerializedName
+package com.arash.arch.domain.base
 
 sealed class Error {
     /**
@@ -15,7 +13,6 @@ sealed class HttpError : Error() {
 
     object ConnectionFailed : HttpError()
     data class InvalidResponse(
-        @SerializedName("detail")
         val message: String?
     ) : HttpError()
 

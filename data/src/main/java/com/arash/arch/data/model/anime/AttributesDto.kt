@@ -1,9 +1,10 @@
 package com.arash.arch.data.model.anime
 
+import com.arash.arch.data.model.EntityModel
+import com.arash.arch.domain.model.Attributes
 import com.google.gson.annotations.SerializedName
-import java.util.*
 
-data class Attributes(
+data class AttributesDto(
     @SerializedName("canonicalTitle")
     val title: String,
     @SerializedName("description")
@@ -33,9 +34,9 @@ data class Attributes(
     @SerializedName("status")
     val status: String,
     @SerializedName("posterImage")
-    val posterImage: ImageLinks,
+    val posterImage: ImageLinksDto,
     @SerializedName("coverImage")
-    val coverImage: ImageLinks?,
+    val coverImage: ImageLinksDto?,
     @SerializedName("episodeCount")
     val episodeCount: Int,
     @SerializedName("episodeLength")
@@ -46,4 +47,30 @@ data class Attributes(
     val showType: String,
     @SerializedName("createdAt")
     val createdAt: String
-)
+) : EntityModel<Attributes> {
+    override fun toDomain(): Attributes {
+        return Attributes(
+            title,
+            description,
+            synopsis,
+            averageRating,
+            userCount,
+            favoritesCount,
+            startDate,
+            endDate,
+            nextRelease,
+            popularityRank,
+            ratingRank,
+            ageRating,
+            ageRatingGuide,
+            status,
+            posterImage.toDomain(),
+            coverImage?.toDomain(),
+            episodeCount,
+            episodeLength,
+            totalLength,
+            showType,
+            createdAt
+        )
+    }
+}

@@ -1,10 +1,13 @@
 package com.arash.arch.data.source
 
-import com.arash.arch.data.model.anime.AnimeListDto
-import com.arash.arch.data.model.anime.toAnimeListWrapper
+import com.arash.arch.data.model.ResponseWrapperDto
+import com.arash.arch.data.model.anime.AnimeDto
+import com.arash.arch.data.model.anime.toResponseWrapper
 import com.arash.arch.data.source.db.AnimeDao
 import com.arash.arch.data.source.db.toAnimeEntityList
 import com.arash.arch.data.source.preference.AppPreferencesHelper
+import com.arash.arch.domain.model.Anime
+import com.arash.arch.domain.model.ResponseWrapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -15,13 +18,13 @@ class LocalDataSource @Inject constructor(
     private val animeDao: AnimeDao,
     private val preferencesHelper: AppPreferencesHelper
 ) {
-    fun getAnimeList(): Flow<AnimeListDto> {
+    fun getAnimeList(): Flow<ResponseWrapper<Anime>> {
         return animeDao.getAnimeList().map {
-            it.toAnimeListWrapper(preferencesHelper.getPaginationLinks())
+            it.toResponseWrapper(preferencesHelper.getPaginationLinks())
         }
     }
 
-    suspend fun insertAnimeList(animeListDto: AnimeListDto) {
+    suspend fun insertAnimeList(animeListDto: ResponseWrapperDto<Anime, AnimeDto>) {
         animeDao.insertAnimeList(animeListDto.toAnimeEntityList())
         animeDao.removeExtraRows()
         animeListDto.links?.let { preferencesHelper.setPaginationLinks(it) }

@@ -1,7 +1,7 @@
 package com.arash.arch.data.source.db
 
 import androidx.room.ColumnInfo
-import com.arash.arch.data.model.anime.ImageLinks
+import com.arash.arch.data.model.anime.ImageLinksDto
 
 data class ImageLinksDb(
     @ColumnInfo(name = "tiny")
@@ -16,4 +16,4 @@ data class ImageLinksDb(
     val original: String
 )
 
-fun ImageLinks.toImageLinksDb(): ImageLinksDb = ImageLinksDb(tiny, large, small, medium, original)
+fun ImageLinksDto.toImageLinksDb(): ImageLinksDb = ImageLinksDb(tiny, large, small, medium, original)

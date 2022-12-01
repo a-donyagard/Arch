@@ -1,7 +1,7 @@
 package com.arash.arch.ui.base
 
 import androidx.lifecycle.*
-import com.arash.arch.data.model.Error
+import com.arash.arch.domain.base.Error
 import com.arash.arch.util.livedata.ActivityActionLiveData
 import com.arash.arch.util.livedata.FragmentActionLiveData
 import com.arash.arch.util.livedata.SingleEventLiveData

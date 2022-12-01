@@ -2,8 +2,8 @@ package com.arash.arch.util.providers
 
 import android.util.Log
 import com.arash.arch.R
-import com.arash.arch.data.model.HttpError
-import com.arash.arch.data.model.Error
+import com.arash.arch.domain.base.HttpError
+import com.arash.arch.domain.base.Error
 import javax.inject.Inject
 
 /**

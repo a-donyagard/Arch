@@ -1,14 +1,13 @@
 package com.arash.arch.data.mapper
 
-import com.google.gson.Gson
-import com.arash.arch.data.model.HttpError
-import com.arash.arch.data.model.Error
+import com.arash.arch.domain.base.Error
+import com.arash.arch.domain.base.HttpError
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 
-class HttpErrorMapper @Inject constructor(private val gson: Gson) {
+class HttpErrorMapper @Inject constructor() {
 
     fun mapToErrorModel(throwable: Throwable): Error? {
         return when (throwable) {
@@ -33,7 +32,7 @@ class HttpErrorMapper @Inject constructor(private val gson: Gson) {
                     if (errorBody.isEmpty()) {
                         throw Exception()
                     }
-                    gson.fromJson(errorBody, HttpError.InvalidResponse::class.java)
+                    HttpError.InvalidResponse(errorBody)
                 } catch (e: Exception) {
                     e.printStackTrace()
                     HttpError.BadRequest

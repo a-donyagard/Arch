@@ -1,7 +1,7 @@
 package com.arash.arch.data.mapper
 
 import com.arash.arch.data.util.EmptyListException
-import com.arash.arch.data.model.Error
+import com.arash.arch.domain.base.Error
 import javax.inject.Inject
 
 /**

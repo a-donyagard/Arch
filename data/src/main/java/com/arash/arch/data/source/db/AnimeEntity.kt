@@ -1,7 +1,9 @@
 package com.arash.arch.data.source.db
 
 import androidx.room.*
-import com.arash.arch.data.model.anime.AnimeListDto
+import com.arash.arch.data.model.ResponseWrapperDto
+import com.arash.arch.data.model.anime.AnimeDto
+import com.arash.arch.domain.model.Anime
 
 @Entity(tableName = "AnimeEntity", indices = [Index(value = ["id"], unique = true)])
 data class AnimeEntity(
@@ -54,7 +56,7 @@ data class AnimeEntity(
     val rowCreatedTime: Long
 )
 
-fun AnimeListDto.toAnimeEntityList(): List<AnimeEntity> {
+fun ResponseWrapperDto<Anime, AnimeDto>.toAnimeEntityList(): List<AnimeEntity> {
     return data.map {
         AnimeEntity(
             it.id,

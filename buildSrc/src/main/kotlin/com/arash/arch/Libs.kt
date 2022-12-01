@@ -14,6 +14,7 @@ object Libs {
 
     object Modules {
         const val data = ":data"
+        const val domain = ":domain"
     }
 
     object Jetpack {
@@ -45,7 +46,7 @@ object Libs {
         const val arrowSyntax = "io.arrow-kt:arrow-syntax:${Versions.arrow}"
         const val arrowMeta = "io.arrow-kt:arrow-meta:${Versions.arrow}"
         const val dagger = "com.google.dagger:dagger:${Versions.dagger}"
-        const val daggerCompiler = "com.google.dagger:dagger-compiler:${Versions.daggerAndroid}"
+        const val daggerCompiler = "com.google.dagger:dagger-compiler:${Versions.dagger}"
         const val daggerAndroid =
             "com.google.dagger:dagger-android-support:${Versions.daggerAndroid}"
         const val daggerAndroidCompiler =

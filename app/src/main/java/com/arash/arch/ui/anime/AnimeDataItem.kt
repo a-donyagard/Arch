@@ -1,7 +1,7 @@
 package com.arash.arch.ui.anime
 
 import com.arash.arch.R
-import com.arash.arch.data.model.anime.Anime
+import com.arash.arch.domain.model.Anime
 import com.arash.arch.util.providers.ResourceProvider
 
 sealed class AnimeDataItem {

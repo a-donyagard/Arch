@@ -2,7 +2,7 @@ package com.arash.arch.data.source.preference
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.arash.arch.data.model.anime.PaginationLinks
+import com.arash.arch.data.model.PaginationLinksDto
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -55,7 +55,7 @@ class AppPreferencesHelper @Inject constructor(@ApplicationContext context: Cont
      */
     var uniqueId: String by PreferenceDelegate(prefs, UNIQUE_ID, "")
 
-    fun setPaginationLinks(paginationLinks: PaginationLinks) {
+    fun setPaginationLinks(paginationLinks: PaginationLinksDto) {
         val editor = prefs.edit()
         editor.putString(FIRST_PAGE_LINK, paginationLinks.first)
         editor.putString(NEXT_PAGE_LINK, paginationLinks.next)
@@ -64,8 +64,8 @@ class AppPreferencesHelper @Inject constructor(@ApplicationContext context: Cont
         editor.apply()
     }
 
-    fun getPaginationLinks(): PaginationLinks {
-        return PaginationLinks(
+    fun getPaginationLinks(): PaginationLinksDto {
+        return PaginationLinksDto(
             first = prefs.getString(FIRST_PAGE_LINK, null),
             next = prefs.getString(NEXT_PAGE_LINK, null),
             prev = prefs.getString(PREV_PAGE_LINK, null),
