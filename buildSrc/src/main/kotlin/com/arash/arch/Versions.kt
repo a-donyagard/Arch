@@ -14,6 +14,7 @@ object Versions {
     const val room = "2.4.3"
     const val dagger = "2.40.1"
     const val daggerAndroid = "2.25.4"
+    const val javaInject = "1"
     const val okHttp = "4.9.0"
     const val gson = "2.8.6"
     const val retrofit = "2.9.0"

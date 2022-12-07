@@ -13,6 +13,5 @@ java {
 dependencies {
     implementation(Libs.Common.coroutines)
     implementation(Libs.Common.arrowCore)
-    implementation(Libs.Common.dagger)
-    implementation(Libs.Common.daggerCompiler)
+    implementation(Libs.Common.javaInject)
 }

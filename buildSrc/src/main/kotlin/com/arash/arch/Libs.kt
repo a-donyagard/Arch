@@ -51,6 +51,7 @@ object Libs {
             "com.google.dagger:dagger-android-support:${Versions.daggerAndroid}"
         const val daggerAndroidCompiler =
             "com.google.dagger:dagger-android-processor:${Versions.daggerAndroid}"
+        const val javaInject = "javax.inject:javax.inject:${Versions.javaInject}"
         const val gson = "com.google.code.gson:gson:${Versions.gson}"
         const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
         const val retrofitGson = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"

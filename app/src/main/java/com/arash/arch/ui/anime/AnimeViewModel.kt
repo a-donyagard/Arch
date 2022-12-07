@@ -8,6 +8,8 @@ import com.arash.arch.domain.base.Error
 import com.arash.arch.domain.model.Anime
 import com.arash.arch.domain.model.ResponseWrapper
 import com.arash.arch.domain.repository.AnimeRepository
+import com.arash.arch.domain.usecase.GetAnimeListFromDbUseCase
+import com.arash.arch.domain.usecase.GetAnimeListUseCase
 import com.arash.arch.ui.base.BaseViewModel
 import com.arash.arch.util.providers.ErrorMessageProvider
 import com.arash.arch.util.providers.ResourceProvider
@@ -20,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AnimeViewModel @Inject constructor(
-    private val animeRepository: AnimeRepository,
+    private val getAnimeListUseCase: GetAnimeListUseCase,
+    private val getAnimeListFromDbUseCase: GetAnimeListFromDbUseCase,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
 ) : BaseViewModel() {
@@ -38,7 +41,7 @@ class AnimeViewModel @Inject constructor(
     }
 
     private fun getAnimeItemsFromDataBase() = viewModelScope.launch {
-        animeRepository.getAnimeListFromDB()
+        getAnimeListFromDbUseCase()
             .map {
                 manipulateDatabaseAnimeList(it)
             }.collect {
@@ -47,7 +50,7 @@ class AnimeViewModel @Inject constructor(
     }
 
     private fun fetchAnimeList(refresh: Boolean) = viewModelScope.launch {
-        animeRepository.fetchAnimeList(DataConstants.apiListSize, offset, refresh)
+        getAnimeListUseCase(DataConstants.apiListSize, offset, refresh)
             .collect {
                 when (it) {
                     is Either.Right -> manipulateApiAnimList(it.b)
