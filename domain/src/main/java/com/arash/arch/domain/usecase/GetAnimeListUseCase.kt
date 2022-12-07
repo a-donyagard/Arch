@@ -15,7 +15,7 @@ class GetAnimeListUseCase @Inject constructor(
         limit: Int,
         offset: Int,
         refresh: Boolean
-    ): Flow<Either<Error, ResponseWrapper<Anime>>> {
+    ): Flow<Either<Error, ResponseWrapper<List<Anime>>>> {
         return repository.fetchAnimeList(limit, offset, refresh)
     }
 }

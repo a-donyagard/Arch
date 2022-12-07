@@ -3,38 +3,45 @@ package com.arash.arch.data.repository
 import arrow.core.Either
 import com.arash.arch.data.mapper.ErrorMapper
 import com.arash.arch.data.model.EntityModel
-import com.arash.arch.domain.base.Error
-import com.arash.arch.data.model.ResponseWrapperDto
 import com.arash.arch.data.model.wrapper.PaginationResponse
 import com.arash.arch.data.util.EmptyListException
-import com.arash.arch.domain.base.DomainModel
-import com.arash.arch.domain.model.ResponseWrapper
+import com.arash.arch.domain.base.Error
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 abstract class BaseRepository(private val errorMapper: ErrorMapper) {
-    protected fun <D : DomainModel, E : EntityModel<D>> getResult(
-        call: suspend () -> ResponseWrapperDto<D, E>
-    ): Flow<Either<Error, ResponseWrapper<D>>> {
+    protected fun <T, R> getResult(
+        call: suspend () -> T
+    ): Flow<Either<Error, R>> {
         return flow {
             kotlin.runCatching {
-                emit(Either.right(call.invoke().toDomain()))
+                emit(call.invoke().wrapResponse())
             }.onFailure {
                 emit(Either.left(errorMapper.getError(it)))
             }
         }
     }
 
-    protected fun <T : List<Any>> getListResult(call: suspend () -> T): Flow<Either<Error, T>> {
-        return flow {
-            kotlin.runCatching {
-                val list = call.invoke()
-                if (list.isEmpty()) {
+    @Suppress("UNCHECKED_CAST")
+    private fun <T, R> T.wrapResponse(): Either<Error, R> {
+        return when (this) {
+            is EntityModel<*> -> {
+                Either.right(this.toDomain() as R)
+            }
+            is List<*> -> {
+                if (this.isEmpty()) {
                     throw EmptyListException()
                 }
-                emit(Either.right(list))
-            }.onFailure {
-                emit(Either.left(errorMapper.getError(it)))
+                this.firstOrNull()?.let {
+                    if (it is String) {
+                        Either.right(this as R)
+                    } else {
+                        Either.right(this.map { item -> (item as EntityModel<*>).toDomain() } as R)
+                    }
+                } ?: Either.right(this.map { (it as EntityModel<*>).toDomain() } as R)
+            }
+            else -> {
+                Either.right(this as R)
             }
         }
     }

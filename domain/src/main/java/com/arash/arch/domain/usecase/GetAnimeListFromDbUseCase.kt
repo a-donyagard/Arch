@@ -9,7 +9,7 @@ import javax.inject.Inject
 class GetAnimeListFromDbUseCase @Inject constructor(
     private val repository: AnimeRepository
 ) {
-    operator fun invoke(): Flow<ResponseWrapper<Anime>> {
+    operator fun invoke(): Flow<ResponseWrapper<List<Anime>>> {
         return repository.getAnimeListFromDB()
     }
 }

@@ -51,7 +51,7 @@ fun AnimeEntity.toAnime(): Anime {
     )
 }
 
-fun List<AnimeEntity>.toResponseWrapper(paginationLinks: PaginationLinksDto): ResponseWrapper<Anime> {
+fun List<AnimeEntity>.toResponseWrapper(paginationLinks: PaginationLinksDto): ResponseWrapper<List<Anime>> {
     return ResponseWrapper(
         map {
             it.toAnime()

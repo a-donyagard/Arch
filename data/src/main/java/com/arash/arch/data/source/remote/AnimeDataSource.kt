@@ -11,5 +11,5 @@ interface AnimeDataSource {
     suspend fun fetchAnimeList(
         @Query("page[limit]") limit: Int,
         @Query("page[offset]") offset: Int
-    ): ResponseWrapperDto<Anime, AnimeDto>
+    ): ResponseWrapperDto<List<AnimeDto>>
 }

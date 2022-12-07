@@ -3,7 +3,7 @@ package com.arash.arch.domain.model
 import com.arash.arch.domain.base.DomainModel
 
 data class ResponseWrapper<T>(
-    val data: List<T>,
+    val data: T,
     val links: PaginationLinks?
 ) : DomainModel
 

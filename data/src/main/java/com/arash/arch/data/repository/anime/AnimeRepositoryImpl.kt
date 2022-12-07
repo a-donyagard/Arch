@@ -23,7 +23,7 @@ class AnimeRepositoryImpl @Inject constructor(
         limit: Int,
         offset: Int,
         refresh: Boolean
-    ): Flow<Either<Error, ResponseWrapper<Anime>>> {
+    ): Flow<Either<Error, ResponseWrapper<List<Anime>>>> {
         return getResult {
             val kitsoResponse = animeDataSource.fetchAnimeList(limit, offset)
             if (refresh) localDataSource.clearAnimeEntity()
@@ -32,7 +32,7 @@ class AnimeRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getAnimeListFromDB(): Flow<ResponseWrapper<Anime>> {
+    override fun getAnimeListFromDB(): Flow<ResponseWrapper<List<Anime>>> {
         return localDataSource.getAnimeList()
     }
 }
