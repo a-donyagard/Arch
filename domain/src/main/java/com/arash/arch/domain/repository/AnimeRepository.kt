@@ -11,7 +11,7 @@ interface AnimeRepository {
         limit: Int,
         offset: Int,
         refresh: Boolean
-    ): Flow<Either<Error, ResponseWrapper<Anime>>>
+    ): Flow<Either<Error, ResponseWrapper<List<Anime>>>>
 
-    fun getAnimeListFromDB(): Flow<ResponseWrapper<Anime>>
+    fun getAnimeListFromDB(): Flow<ResponseWrapper<List<Anime>>>
 }

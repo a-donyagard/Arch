@@ -1,19 +1,23 @@
 package com.arash.arch.data.model
 
-import com.arash.arch.domain.base.DomainModel
 import com.arash.arch.domain.model.PaginationLinks
 import com.arash.arch.domain.model.ResponseWrapper
 import com.google.gson.annotations.SerializedName
 
-data class ResponseWrapperDto<D : DomainModel, E : EntityModel<D>>(
+data class ResponseWrapperDto<T>(
     @SerializedName("data")
-    val data: List<E>,
+    val data: T,
     @SerializedName("links")
     val links: PaginationLinksDto?
-) : EntityModel<ResponseWrapper<D>> {
-    override fun toDomain(): ResponseWrapper<D> {
+) : EntityModel<ResponseWrapper<*>> {
+    override fun toDomain(): ResponseWrapper<*> {
+        val domainData = when (data) {
+            is EntityModel<*> -> data.toDomain()
+            is List<*> -> data.map { (it as EntityModel<*>).toDomain() }
+            else -> data
+        }
         return ResponseWrapper(
-            data.map { it.toDomain() },
+            domainData,
             links?.toDomain()
         )
     }

@@ -18,13 +18,13 @@ class LocalDataSource @Inject constructor(
     private val animeDao: AnimeDao,
     private val preferencesHelper: AppPreferencesHelper
 ) {
-    fun getAnimeList(): Flow<ResponseWrapper<Anime>> {
+    fun getAnimeList(): Flow<ResponseWrapper<List<Anime>>> {
         return animeDao.getAnimeList().map {
             it.toResponseWrapper(preferencesHelper.getPaginationLinks())
         }
     }
 
-    suspend fun insertAnimeList(animeListDto: ResponseWrapperDto<Anime, AnimeDto>) {
+    suspend fun insertAnimeList(animeListDto: ResponseWrapperDto<List<AnimeDto>>) {
         animeDao.insertAnimeList(animeListDto.toAnimeEntityList())
         animeDao.removeExtraRows()
         animeListDto.links?.let { preferencesHelper.setPaginationLinks(it) }

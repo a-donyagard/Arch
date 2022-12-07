@@ -7,7 +7,6 @@ import com.arash.arch.data.util.DataConstants
 import com.arash.arch.domain.base.Error
 import com.arash.arch.domain.model.Anime
 import com.arash.arch.domain.model.ResponseWrapper
-import com.arash.arch.domain.repository.AnimeRepository
 import com.arash.arch.domain.usecase.GetAnimeListFromDbUseCase
 import com.arash.arch.domain.usecase.GetAnimeListUseCase
 import com.arash.arch.ui.base.BaseViewModel
@@ -59,7 +58,7 @@ class AnimeViewModel @Inject constructor(
             }
     }
 
-    private suspend fun manipulateApiAnimList(response: ResponseWrapper<Anime>) {
+    private suspend fun manipulateApiAnimList(response: ResponseWrapper<List<Anime>>) {
         isLoading = false
         if (response.data.size == DataConstants.apiListSize && response.links?.next.isNullOrEmpty()
                 .not()
@@ -78,7 +77,7 @@ class AnimeViewModel @Inject constructor(
         _loadingLiveData.value = false
     }
 
-    private fun manipulateDatabaseAnimeList(response: ResponseWrapper<Anime>): List<AnimeDataItem.AnimeItem> {
+    private fun manipulateDatabaseAnimeList(response: ResponseWrapper<List<Anime>>): List<AnimeDataItem.AnimeItem> {
         return response.data.toAnimeDataItems(resourceProvider)
     }
 

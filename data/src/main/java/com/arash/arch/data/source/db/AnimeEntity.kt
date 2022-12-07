@@ -56,32 +56,34 @@ data class AnimeEntity(
     val rowCreatedTime: Long
 )
 
-fun ResponseWrapperDto<Anime, AnimeDto>.toAnimeEntityList(): List<AnimeEntity> {
+fun ResponseWrapperDto<List<AnimeDto>>.toAnimeEntityList(): List<AnimeEntity> {
     return data.map {
-        AnimeEntity(
-            it.id,
-            it.attributes.title,
-            it.attributes.description,
-            it.attributes.synopsis,
-            it.attributes.averageRating,
-            it.attributes.userCount,
-            it.attributes.favoritesCount,
-            it.attributes.startDate,
-            it.attributes.endDate,
-            it.attributes.nextRelease,
-            it.attributes.popularityRank,
-            it.attributes.ratingRank,
-            it.attributes.ageRating,
-            it.attributes.ageRatingGuide,
-            it.attributes.status,
-            it.attributes.posterImage.toImageLinksDb(),
-            it.attributes.coverImage?.toImageLinksDb(),
-            it.attributes.episodeCount,
-            it.attributes.episodeLength,
-            it.attributes.totalLength,
-            it.attributes.showType,
-            it.attributes.createdAt,
-            System.currentTimeMillis()
-        )
+        it.attributes.run {
+            AnimeEntity(
+                it.id,
+                title,
+                description,
+                synopsis,
+                averageRating,
+                userCount,
+                favoritesCount,
+                startDate,
+                endDate,
+                nextRelease,
+                popularityRank,
+                ratingRank,
+                ageRating,
+                ageRatingGuide,
+                status,
+                posterImage.toImageLinksDb(),
+                coverImage?.toImageLinksDb(),
+                episodeCount,
+                episodeLength,
+                totalLength,
+                showType,
+                createdAt,
+                System.currentTimeMillis()
+            )
+        }
     }
 }
