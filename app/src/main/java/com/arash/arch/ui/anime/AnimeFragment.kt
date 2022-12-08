@@ -69,6 +69,7 @@ class AnimeFragment : BaseFragment<AnimeViewModel, FragmentAnimeBinding>() {
             )
         }
         viewModel.animeItemsFlow.collectLatestLifecycleFlow {
+            if (it.isEmpty()) return@collectLatestLifecycleFlow
             adapter?.submitList(it)
         }
         viewModel.emptyListFlow.collectLifecycleFlow {

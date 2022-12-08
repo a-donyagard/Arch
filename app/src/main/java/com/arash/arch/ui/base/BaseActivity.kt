@@ -27,7 +27,7 @@ abstract class BaseActivity<V : BaseViewModel, B : ViewDataBinding> : AppCompatA
         // set suggestViewModel as an observer to this activity lifecycle events
         lifecycle.addObserver(viewModel)
         // observe suggestViewModel uiActions in order to pass this activity as argument of uiAction
-        viewModel.activityAction.observe(this, { it?.invoke(this) })
+        viewModel.activityAction.observe(this) { it?.invoke(this) }
         onViewInitialized(binding)
     }
 

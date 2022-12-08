@@ -22,11 +22,11 @@ class AnimeRepositoryImpl @Inject constructor(
     override fun fetchAnimeList(
         limit: Int,
         offset: Int,
-        refresh: Boolean
+        force: Boolean
     ): Flow<Either<Error, ResponseWrapper<List<Anime>>>> {
         return getResult {
             val kitsoResponse = animeDataSource.fetchAnimeList(limit, offset)
-            if (refresh) localDataSource.clearAnimeEntity()
+            if (force) localDataSource.clearAnimeEntity()
             localDataSource.insertAnimeList(kitsoResponse)
             kitsoResponse
         }

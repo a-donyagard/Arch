@@ -18,7 +18,7 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
     }
 
     private fun observers() {
-        viewModel.loadingFlow.collectLifecycleFlow {
+        viewModel.loadingLiveData.observe(this) {
             binding.progressBar.changeVisibility(it)
         }
     }

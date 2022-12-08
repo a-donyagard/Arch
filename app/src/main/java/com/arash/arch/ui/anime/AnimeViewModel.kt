@@ -13,7 +13,6 @@ import com.arash.arch.domain.usecase.GetAnimeListUseCase
 import com.arash.arch.ui.base.BaseViewModel
 import com.arash.arch.util.extension.UiState
 import com.arash.arch.util.extension.toUiState
-import com.arash.arch.util.providers.ErrorMessageProvider
 import com.arash.arch.util.providers.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -56,8 +55,8 @@ class AnimeViewModel @Inject constructor(
             }
     }
 
-    private suspend fun fetchAnimeList(refresh: Boolean) {
-        getAnimeListUseCase(DataConstants.apiListSize, offset, refresh)
+    private suspend fun fetchAnimeList(force: Boolean) {
+        getAnimeListUseCase(DataConstants.apiListSize, offset, force)
             .collect {
                 manipulateApiAnimList(it)
             }

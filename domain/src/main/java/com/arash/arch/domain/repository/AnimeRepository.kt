@@ -10,7 +10,7 @@ interface AnimeRepository {
     fun fetchAnimeList(
         limit: Int,
         offset: Int,
-        refresh: Boolean
+        force: Boolean
     ): Flow<Either<Error, ResponseWrapper<List<Anime>>>>
 
     fun getAnimeListFromDB(): Flow<ResponseWrapper<List<Anime>>>
