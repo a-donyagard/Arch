@@ -1,6 +1,7 @@
 package com.arash.arch.ui
 
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
 import com.arash.arch.R
 import com.arash.arch.databinding.ActivityMainBinding
 import com.arash.arch.ui.base.BaseActivity
@@ -18,7 +19,7 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
     }
 
     private fun observers() {
-        viewModel.loadingLiveData.observe(this) {
+        viewModel.loadingFlow.collectLifecycleFlow(Lifecycle.State.CREATED) {
             binding.progressBar.changeVisibility(it)
         }
     }
