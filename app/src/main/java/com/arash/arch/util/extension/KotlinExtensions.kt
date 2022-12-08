@@ -80,35 +80,3 @@ fun WebView.loadWebView(url: String) {
     settings.javaScriptEnabled = true
     loadUrl(url)
 }
-
-/**
- * Used for collect stateFlow data from fragment
- */
-fun <T> Fragment.collectLatestLifecycleFlow(
-    flow: Flow<T>,
-    state: Lifecycle.State = Lifecycle.State.STARTED,
-    action: suspend (T) -> Unit
-) {
-    lifecycleScope.launch {
-        viewLifecycleOwner.repeatOnLifecycle(state) {
-            flow.collectLatest(action)
-        }
-    }
-}
-
-/**
- * Used for collect sharedFlow data from fragment
- */
-fun <T> Fragment.collectLifecycleFlow(
-    flow: Flow<T>,
-    state: Lifecycle.State = Lifecycle.State.STARTED,
-    action: suspend (T) -> Unit
-) {
-    lifecycleScope.launch {
-        viewLifecycleOwner.repeatOnLifecycle(state) {
-            flow.collect {
-                action(it)
-            }
-        }
-    }
-}

@@ -9,18 +9,23 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import com.arash.arch.domain.base.Error
 import com.arash.arch.ui.MainActivityViewModel
 import com.arash.arch.util.extension.collectLatestLifecycleFlow
 import com.arash.arch.util.extension.collectLifecycleFlow
 import com.arash.arch.util.extension.showMessage
+import com.arash.arch.util.providers.ErrorMessageProvider
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-abstract class BaseFragment<V : BaseViewModel, B : ViewDataBinding> : Fragment(),
-    BaseView<V, B> {
+abstract class BaseFragment<V : BaseViewModel, B : ViewDataBinding> : Fragment(), BaseView<V, B> {
 
     private var _binding: B? = null
     protected val binding get() = _binding!!
     protected val activityViewModel: MainActivityViewModel by activityViewModels()
+
+    @Inject
+    lateinit var errorMessageProvider: ErrorMessageProvider
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,16 +48,19 @@ abstract class BaseFragment<V : BaseViewModel, B : ViewDataBinding> : Fragment()
         viewModel.activityAction.observe(viewLifecycleOwner) { it?.invoke(requireActivity()) }
         viewModel.fragmentAction.observe(viewLifecycleOwner) { it?.invoke(this) }
         onViewInitialized(binding)
-        observers()
     }
 
-    private fun observers() {
-        viewModel.loadingLiveData.observe(viewLifecycleOwner) {
-            activityViewModel.showProgressBar(it)
-        }
-        viewModel.messageLiveData.observe(viewLifecycleOwner) {
-            requireView().showMessage(it)
-        }
+    protected fun showLoading() {
+        activityViewModel.showProgressBar(true)
+    }
+
+    protected fun hideLoading() {
+        activityViewModel.showProgressBar(false)
+    }
+
+    protected fun showErrorMessage(error: Error) {
+        val errorMessage = errorMessageProvider.getErrorMessage(error)
+        requireView().showMessage(errorMessage)
     }
 
     override fun onDestroyView() {

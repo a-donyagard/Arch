@@ -6,6 +6,7 @@ import com.arash.arch.R
 import com.arash.arch.databinding.FragmentAnimeBinding
 import com.arash.arch.ui.base.BaseFragment
 import com.arash.arch.util.LoadMoreScrollListener
+import com.arash.arch.util.extension.foldResponse
 import com.arash.arch.util.extension.showMessage
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -47,8 +48,31 @@ class AnimeFragment : BaseFragment<AnimeViewModel, FragmentAnimeBinding>() {
     }
 
     private fun observers() {
+        viewModel.animeItemsUiStateFlow.collectLatestLifecycleFlow { uiState ->
+            uiState.foldResponse(
+                onLoading = {
+                    showLoading()
+                },
+                onStopLoading = {
+                    hideLoading()
+                },
+                onSuccess = {
+                    //no-op
+                },
+                onFailure = {
+                    viewModel.removeLoadingItem()
+                    showErrorMessage(it)
+                },
+                onEmptyList = {
+                    viewModel.handleEmptyList()
+                }
+            )
+        }
         viewModel.animeItemsFlow.collectLatestLifecycleFlow {
             adapter?.submitList(it)
+        }
+        viewModel.emptyListFlow.collectLifecycleFlow {
+            // TODO: show emptyList icon in middle of page
         }
     }
 }

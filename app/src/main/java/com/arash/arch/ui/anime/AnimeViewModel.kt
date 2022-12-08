@@ -3,6 +3,7 @@ package com.arash.arch.ui.anime
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import arrow.core.extensions.list.foldable.isNotEmpty
+import arrow.core.extensions.list.foldable.toList
 import com.arash.arch.data.util.DataConstants
 import com.arash.arch.domain.base.Error
 import com.arash.arch.domain.model.Anime
@@ -10,12 +11,12 @@ import com.arash.arch.domain.model.ResponseWrapper
 import com.arash.arch.domain.usecase.GetAnimeListFromDbUseCase
 import com.arash.arch.domain.usecase.GetAnimeListUseCase
 import com.arash.arch.ui.base.BaseViewModel
+import com.arash.arch.util.extension.UiState
+import com.arash.arch.util.extension.toUiState
 import com.arash.arch.util.providers.ErrorMessageProvider
 import com.arash.arch.util.providers.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,18 +24,25 @@ import javax.inject.Inject
 class AnimeViewModel @Inject constructor(
     private val getAnimeListUseCase: GetAnimeListUseCase,
     private val getAnimeListFromDbUseCase: GetAnimeListFromDbUseCase,
-    private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
 ) : BaseViewModel() {
-    private val _animeItemsFlow = MutableStateFlow<List<AnimeDataItem>>(emptyList())
-    val animeItemsFlow: Flow<List<AnimeDataItem>> = _animeItemsFlow
+    private val _animeItemsUiStateFlow =
+        MutableStateFlow<UiState<List<AnimeDataItem>>>(UiState.None())
+    val animeItemsUiStateFlow = _animeItemsUiStateFlow.asStateFlow()
+
+    private val _animeItemsFlow = MutableStateFlow<MutableList<AnimeDataItem>>(mutableListOf())
+    val animeItemsFlow: StateFlow<List<AnimeDataItem>> = _animeItemsFlow.asStateFlow()
+
+    private val _emptyListFlow = MutableSharedFlow<Boolean>()
+    val emptyListFlow = _emptyListFlow.asSharedFlow()
+
     private var isLoading = false
     private var canLoadMore = true
     private var offset = 0
 
-    fun manualInit() {
+    fun manualInit() = viewModelScope.launch {
         isLoading = true
-        _loadingLiveData.value = true
+        _animeItemsUiStateFlow.emit(UiState.Loading())
         getAnimeItemsFromDataBase()
         fetchAnimeList(false)
     }
@@ -42,51 +50,40 @@ class AnimeViewModel @Inject constructor(
     private fun getAnimeItemsFromDataBase() = viewModelScope.launch {
         getAnimeListFromDbUseCase()
             .map {
-                manipulateDatabaseAnimeList(it)
+                it.data.toAnimeDataItems(resourceProvider)
             }.collect {
-                _animeItemsFlow.emit(it)
+                _animeItemsFlow.emit(it.toMutableList())
             }
     }
 
-    private fun fetchAnimeList(refresh: Boolean) = viewModelScope.launch {
+    private suspend fun fetchAnimeList(refresh: Boolean) {
         getAnimeListUseCase(DataConstants.apiListSize, offset, refresh)
             .collect {
-                when (it) {
-                    is Either.Right -> manipulateApiAnimList(it.b)
-                    is Either.Left -> getAnimeListApiFail(it.a)
-                }
+                manipulateApiAnimList(it)
             }
     }
 
-    private suspend fun manipulateApiAnimList(response: ResponseWrapper<List<Anime>>) {
-        isLoading = false
-        if (response.data.size == DataConstants.apiListSize && response.links?.next.isNullOrEmpty()
-                .not()
-        ) {
-            canLoadMore = true
-            offset += DataConstants.apiListSize
-        } else {
-            canLoadMore = false
+    private suspend fun manipulateApiAnimList(either: Either<Error, ResponseWrapper<List<Anime>>>) {
+        val uiState = either.toUiState {
+            isLoading = false
+            if (it.data.size == DataConstants.apiListSize && it.links?.next.isNullOrEmpty().not()) {
+                canLoadMore = true
+                offset += DataConstants.apiListSize
+            } else {
+                canLoadMore = false
+            }
+            val animeItems = mutableListOf<AnimeDataItem>()
+            animeItems.addAll(_animeItemsFlow.value)
+            if (animeItems.isNotEmpty() && animeItems.last() is AnimeDataItem.LoadingItem) {
+                animeItems.removeLast()
+            }
+            _animeItemsFlow.value = animeItems
+            animeItems.toList()
         }
-        val animeItems = mutableListOf<AnimeDataItem>()
-        animeItems.addAll(_animeItemsFlow.value)
-        if (animeItems.isNotEmpty() && animeItems.last() is AnimeDataItem.LoadingItem) {
-            animeItems.removeLast()
-        }
-        _animeItemsFlow.emit(animeItems)
-        _loadingLiveData.value = false
+        _animeItemsUiStateFlow.emit(uiState)
     }
 
-    private fun manipulateDatabaseAnimeList(response: ResponseWrapper<List<Anime>>): List<AnimeDataItem.AnimeItem> {
-        return response.data.toAnimeDataItems(resourceProvider)
-    }
-
-    private suspend fun getAnimeListApiFail(error: Error) {
-        if (offset == 0) {
-            onEmptyListApiFailure(error, errorMessageProvider)
-        } else {
-            onApiFailure(error, errorMessageProvider)
-        }
+    fun removeLoadingItem() = viewModelScope.launch {
         val animeItems = mutableListOf<AnimeDataItem>()
         animeItems.addAll(_animeItemsFlow.value)
         if (animeItems.isNotEmpty() && animeItems.last() is AnimeDataItem.LoadingItem) {
@@ -107,11 +104,17 @@ class AnimeViewModel @Inject constructor(
         fetchAnimeList(false)
     }
 
-    fun refresh() {
-        _loadingLiveData.value = true
+    fun refresh() = viewModelScope.launch {
+        _animeItemsUiStateFlow.emit(UiState.Loading())
         isLoading = true
         canLoadMore = true
         offset = 0
         fetchAnimeList(true)
+    }
+
+    fun handleEmptyList() = viewModelScope.launch {
+        if (offset == 0) {
+            _emptyListFlow.emit(true)
+        }
     }
 }

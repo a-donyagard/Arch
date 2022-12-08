@@ -4,6 +4,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.Lifecycle
+import com.arash.arch.util.extension.collectLatestLifecycleFlow
+import com.arash.arch.util.extension.collectLifecycleFlow
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Every Activity should inherit from this base activity in order to create relevant binding class,
@@ -25,5 +29,25 @@ abstract class BaseActivity<V : BaseViewModel, B : ViewDataBinding> : AppCompatA
         // observe suggestViewModel uiActions in order to pass this activity as argument of uiAction
         viewModel.activityAction.observe(this, { it?.invoke(this) })
         onViewInitialized(binding)
+    }
+
+    /**
+     * Used for collect stateFlow data from fragment
+     */
+    protected fun <T> Flow<T>.collectLatestLifecycleFlow(
+        state: Lifecycle.State = Lifecycle.State.STARTED,
+        action: suspend (T) -> Unit
+    ) {
+        this@BaseActivity.collectLatestLifecycleFlow(flow = this, state = state, action = action)
+    }
+
+    /**
+     * Used for collect sharedFlow data from fragment
+     */
+    protected fun <T> Flow<T>.collectLifecycleFlow(
+        state: Lifecycle.State = Lifecycle.State.STARTED,
+        action: suspend (T) -> Unit
+    ) {
+        this@BaseActivity.collectLifecycleFlow(flow = this, state = state, action = action)
     }
 }
